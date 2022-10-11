@@ -23,5 +23,9 @@ public class ItemService {
 	public Item findById(Integer id) {
 		return itemRepository.findById(id);
 	}
+	
+	public void insertItem(Item item) {
+		itemRepository.insertItem(item);
+	}
 
 }
