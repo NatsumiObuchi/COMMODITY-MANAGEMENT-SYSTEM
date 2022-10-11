@@ -2,12 +2,18 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.domain.Item;
+import com.example.demo.form.ItemForm;
+import com.example.demo.service.CategoryService;
 import com.example.demo.service.ItemService;
 
 /**
@@ -20,6 +26,14 @@ public class ItemController {
 	
 	@Autowired
 	private ItemService itemService;
+	
+	@Autowired
+	private CategoryService categoryService;
+	
+	@ModelAttribute
+	public ItemForm setUpItemForm() {
+		return new ItemForm();
+	}
 	
 	
 	/**
@@ -61,7 +75,30 @@ public class ItemController {
 	 */
 	@RequestMapping("/add")
 	public String add() {
+//		List<Category> categoryList = 
+		
 		return "add";
 	}
+	
+	/**
+	 * 
+	 * 
+	 * @param form
+	 * @param rs
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/addItem")
+	public String addItem(@Validated ItemForm form, BindingResult rs, Model model) {
+		if(rs.hasErrors()) {
+			return "add";
+		}
+		Item item = new Item();
+		BeanUtils.copyProperties(form, item);
+		itemService.insertItem(item);
+		
+		return "redirect:/list";
+	}
+	
 	
 }
