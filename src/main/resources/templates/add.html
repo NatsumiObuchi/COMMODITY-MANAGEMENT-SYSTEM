@@ -59,7 +59,7 @@
 				<label for="inputName" class="col-sm-2 control-label">name</label>
 				<div class="col-sm-8">
 					<input type="text" class="form-control" id="inputName" th:field="*{name}" />
-					<span class="text-danger">error:may not be empty</span>
+					<span class="text-danger" th:errors="*{name}"></span>
 				</div>
 			</div>
 			<!-- price -->
@@ -67,14 +67,14 @@
 				<label for="price" class="col-sm-2 control-label">price</label>
 				<div class="col-sm-8">
 					<input type="text" class="form-control" id="price" th:field="*{price}" />
-					<span class="text-danger">error:may not be empty</span>
+					<span class="text-danger" th:errors="*{price}"></span>
 				</div>
 			</div>
 			<!-- category -->
 			<div class="form-group">
 				<label for="category" class="col-sm-2 control-label">category</label>
 				<div class="col-sm-8">
-					<select class="form-control" name="parent" id="parent">
+					<select class="form-control" name="parent" id="parent" th:field="*{parent}">
 						<option value="">-- parentCategory --</option>
 					</select>
 				</div>
@@ -82,23 +82,23 @@
 			<div class="form-group">
 				<label for="category" class="col-sm-2 control-label"></label>
 				<div class="col-sm-8">
-					<select class="form-control" name="child" id="child">
-						<option>-- childCategory --</option>
+					<select class="form-control" name="child" id="child" th:field="*{child}">
+						<option value="">-- childCategory --</option>
 					</select>
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="category" class="col-sm-2 control-label"></label>
 				<div class="col-sm-8">
-					<select class="form-control" name="grandChild" id="grandChild">
-						<option>-- grandChild --</option>
+					<select class="form-control" name="grandChild" id="grandChild" th:field="*{grandChild}">
+						<option value="">-- grandChild --</option>
 					</select>
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="category" class="col-sm-2 control-label"></label>
 				<div class="col-sm-8">
-					<span class="text-danger">error:may not be empty</span>
+					<span class="text-danger" th:if="${categoryError}!=null" th:text="${categoryError}">error:may not be empty</span>
 				</div>
 			</div>
 			<!-- brand -->
@@ -106,7 +106,7 @@
 				<label for="brand" class="col-sm-2 control-label">brand</label>
 				<div class="col-sm-8">
 					<input type="text" id="brand" class="form-control" name="brand" th:field="*{brand}" />
-					<span class="text-danger">error:may not be empty</span>
+					<span class="text-danger" th:errors="*{brand}">error:may not be empty</span>
 				</div>
 			</div>
 			<!-- condition -->
@@ -114,20 +114,20 @@
 				<label for="condition" class="col-sm-2 control-label">condition</label>
 				<div class="col-sm-8">
 					<label for="condition1" class="radio-inline">
-						<input type="radio" name="condition" id="condition1" value="1" /> 1
+						<input type="radio" name="condition" id="condition1" value="1" th:field="*{condition}"/> 1
 					</label>
 					<label for="condition2" class="radio-inline">
-						<input type="radio" name="condition" id="condition2" value="2" /> 2
+						<input type="radio" name="condition" id="condition2" value="2" th:field="*{condition}" /> 2
 					</label>
 					<label for="condition3" class="radio-inline">
-						<input type="radio" name="condition" id="condition3" value="3" /> 3
+						<input type="radio" name="condition" id="condition3" value="3" th:field="*{condition}" /> 3
 					</label>
 				</div>
 			</div>
 			<div class="form-group">
 				<label for="category" class="col-sm-2 control-label"></label>
 				<div class="col-sm-8">
-					<span class="text-danger">error:may not be empty</span>
+					<span class="text-danger" th:errors="*{condition}">error:may not be empty</span>
 				</div>
 			</div>
 			<!-- description -->
@@ -136,7 +136,7 @@
 				<div class="col-sm-8">
 					<textarea name="description" id="description" class="form-control" rows="5"
 						th:field="*{description}"></textarea>
-					<span class="text-danger">error:may not be empty</span>
+					<span class="text-danger" th:errors="*{description}">error:may not be empty</span>
 				</div>
 			</div>
 			<!-- submit button -->

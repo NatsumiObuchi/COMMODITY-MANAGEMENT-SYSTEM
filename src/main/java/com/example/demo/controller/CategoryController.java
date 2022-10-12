@@ -1,8 +1,6 @@
 package com.example.demo.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,7 +32,6 @@ public class CategoryController {
 	public List<Category> searchChild(Integer id){
 
 		List<Category> childCategoryList = service.findChild(id);
-		System.out.println(childCategoryList);
 
 		return childCategoryList;
 	}
@@ -49,15 +46,6 @@ public class CategoryController {
 		return grandChildCategoryList;
 	}
 	
-	
-//	@ResponseBody
-//	@RequestMapping(value= "/searchCategory", method= RequestMethod.GET)
-//	public Map<String,String> responce() {
-//		Map<String,String> map = new HashMap<String, String>();
-//		map.put("map1", "OK!");
-//		System.out.println();
-//		
-//		return map;
-//	}
+
 
 }
