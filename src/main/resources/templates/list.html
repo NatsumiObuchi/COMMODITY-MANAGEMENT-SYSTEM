@@ -17,6 +17,9 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
 		integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
 		crossorigin="anonymous"></script>
+
+	<script th:src="@{/js/category.js}"></script>
+
 	<title>Rakus Items</title>
 </head>
 
@@ -52,40 +55,25 @@
 
 		<!-- 検索フォーム -->
 		<div id="forms">
-			<form action="" class="form-inline" role="form">
+			<form th:action="@{/search}" th:object="${searchForm}" class="form-inline" role="form" method="POST">
 				<div class="form-group">
-					<input type="input" class="form-control" id="name" placeholder="item name" />
+					<input type="input" class="form-control" id="searchText" name="searchText" th:field="*{searchText}" placeholder="item name" />
 				</div>
 				<div class="form-group"><i class="fa fa-plus"></i></div>
 				<div class="form-group">
-					<select class="form-control">
-						<option>- parentCategory -</option>
-						<option>parentCategory1</option>
-						<option>parentCategory2</option>
-						<option>parentCategory3</option>
-						<option>parentCategory4</option>
-						<option>parentCategory5</option>
+					<select class="form-control" name="parent" id="parent" th:field="*{parent}">
+						<option value="">-- parentCategory --</option>
 					</select>
-					<select class="form-control">
-						<option>- childCategory -</option>
-						<option>childCategory1</option>
-						<option>childCategory2</option>
-						<option>childCategory3</option>
-						<option>childCategory4</option>
-						<option>childCategory5</option>
+					<select class="form-control" name="child" id="child" th:field="*{child}">
+						<option value="">-- childCategory --</option>
 					</select>
-					<select class="form-control">
-						<option>- grandChild -</option>
-						<option>grandChild1</option>
-						<option>grandChild2</option>
-						<option>grandChild3</option>
-						<option>grandChild4</option>
-						<option>grandChild5</option>
+					<select class="form-control" name="grandChild" id="grandChild" th:field="*{grandChild}">
+						<option value="">-- grandChild --</option>
 					</select>
 				</div>
 				<div class="form-group"><i class="fa fa-plus"></i></div>
 				<div class="form-group">
-					<input type="text" class="form-control" placeholder="brand" />
+					<input type="text" class="form-control" placeholder="brand" name="brand" th:field="*{brand}"/>
 				</div>
 				<div class="form-group"></div>
 				<button type="submit" class="btn btn-default"><i class="fa fa-angle-double-right"></i> search</button>
@@ -101,6 +89,8 @@
 				</ul>
 			</nav>
 		</div>
+
+		<div class="text-danger" th:text="${noItemMessage}" ></div>
 
 		<!-- table -->
 		<div class="table-responsive">
@@ -118,11 +108,11 @@
 					<tr th:each="item:${itemList}">
 						<td class="item-name">
 							<a th:href="@{/detail?id=}+${item.id}">Razer BlackWidow Chroma Keyboard
-							<span th:text="${item.name}">itemName</span>
+								<span th:text="${item.name}">itemName</span>
 							</a>
 						</td>
 						<td class="item-price" th:text="${item.price}">52.0</td>
-						<td class="item-category" th:text="${item.category}"><a href="">Electronics</a> / <a
+						<td class="item-category" th:text="${item.categoryName}"><a href="">Electronics</a> / <a
 								href="">Computers &amp; Tablets</a> / <a href="">Components &amp; Parts</a></td>
 						<td class="item-brand" th:text="${item.brand}"><a href="">Razer</a></td>
 						<td class="item-condition" th:text="${item.condition}">3</td>

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.domain.Item;
+import com.example.demo.domain.Search;
 import com.example.demo.repository.ItemRepository;
 
 @Service
@@ -23,6 +24,11 @@ public class ItemService {
 	public Item findById(Integer id) {
 		return itemRepository.findById(id);
 	}
+
+	public List<Item> searchItems(Search search){
+		return itemRepository.searchItems(search);
+	}
+
 	
 	public void insertItem(Item item) {
 		itemRepository.insertItem(item);
