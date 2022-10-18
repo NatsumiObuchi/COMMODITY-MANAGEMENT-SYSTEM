@@ -17,16 +17,16 @@ public class ItemService {
 	@Autowired
 	private ItemRepository itemRepository;
 	
-	public List<Item> findAll() {
-		return itemRepository.findAll();
+	public List<Item> findAll(Integer nowPage, Integer pageLimit) {
+		return itemRepository.findAll(nowPage,pageLimit);
 	}
 	
 	public Item findById(Integer id) {
 		return itemRepository.findById(id);
 	}
 
-	public List<Item> searchItems(Search search){
-		return itemRepository.searchItems(search);
+	public List<Item> searchItems(Search search, Integer nowPage, Integer pageLimit){
+		return itemRepository.searchItems(search, nowPage, pageLimit);
 	}
 
 	

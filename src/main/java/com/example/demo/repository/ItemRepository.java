@@ -20,6 +20,7 @@ public class ItemRepository {
 
 	private static final RowMapper<Item> ITEMS_ROW_MAPPER = (rs, i) -> {
 		Item item = new Item();
+		item.setCount(rs.getInt("count"));
 		item.setId(rs.getInt("id"));
 		item.setName(rs.getString("name"));
 		item.setCondition(rs.getInt("condition"));
@@ -36,7 +37,7 @@ public class ItemRepository {
 	 * StringBuilderで生成するSQL文のおおもと
 	 */
 	private final String QUERY = 
-			"SELECT i.id, i.name, i.condition, c.name_all as category_name, i.brand, i.price, i.shipping, i.description "
+			"SELECT COUNT(*) OVER() as count, i.id, i.name, i.condition, c.name_all as category_name, i.brand, i.price, i.shipping, i.description "
 			+ "FROM items i "
 			+ "LEFT JOIN category c "
 			+ "ON i.category = c.id ";
@@ -50,12 +51,20 @@ public class ItemRepository {
 	 * 
 	 * @return itemList
 	 */
-	public List<Item> findAll() {
+	public List<Item> findAll(Integer nowPage, Integer pageLimit) {
+		System.out.println("--------------------------------------");
+		System.out.println("Repository nowpage : "+nowPage);
 
 		StringBuilder builder = new StringBuilder(QUERY);
-		builder.append(ORDER_BY_QUERY + "LIMIT 30");
+		builder.append(ORDER_BY_QUERY + "OFFSET :page_limit * (:nowPage -1) LIMIT :page_limit");
 
-		List<Item> itemList = template.query(builder.toString(), ITEMS_ROW_MAPPER);
+		SqlParameterSource param = new MapSqlParameterSource().addValue("nowPage", nowPage).addValue("page_limit", pageLimit);
+		List<Item> itemList = template.query(builder.toString(), param, ITEMS_ROW_MAPPER);
+
+		for(Item item: itemList){
+			System.out.println("Repository itemID : "+item.getId()+"  itemName : "+item.getName());
+
+		}
 
 		return itemList;
 	}
@@ -77,19 +86,13 @@ public class ItemRepository {
 		return item;
 	}
 
-	// public boolean authenticationEnpty(Object obj){
-	// 	if(obj.isEmpty()){
-	// 		return true;
-	// 	}
-	// }
 
 	/**
 	 * 商品一覧ページの検索欄からの検索
 	 * @param search 受け取ったパラメータ
 	 * @return itemList
 	 */
-	public List<Item> searchItems(Search search){
-		System.out.println("SerarchのRepositoryがよばれた");
+	public List<Item> searchItems(Search search, Integer nowPage, Integer pageLimit){
 		StringBuilder builder = new StringBuilder(QUERY);
 		MapSqlParameterSource param = new MapSqlParameterSource();
 		
@@ -98,32 +101,31 @@ public class ItemRepository {
 			authenticationBuilder(builder);
 			builder.append("i.name LIKE :name ");
 			param.addValue("name", "%" + searchtext + "%");
-			System.out.println(searchtext);
-			System.out.println("1 : "+builder.toString());
+			// System.out.println("1 : "+builder.toString());
 		}
 
 		Integer parent = search.getParent();
 		Integer child = search.getChild();
 		Integer grandChild = search.getGrandChild();
-		System.out.println("------parent"+parent+"  child"+child+"   grandChild"+grandChild);
+		// System.out.println("------parent"+parent+"  child"+child+"   grandChild"+grandChild);
 		if ( parent != null && child != null && grandChild != null){
 			authenticationBuilder(builder);
 			builder.append("c.id = :grandChild ");
 			param.addValue("grandChild", grandChild);
-			System.out.println("2 : "+builder.toString());
+			// System.out.println("2 : "+builder.toString());
 
 		} else if ( parent != null && child != null && grandChild == null) {
 			authenticationBuilder(builder);
 			builder.append("c.parent = :child ");
 			param.addValue("child", child);
-			System.out.println("3 : "+builder.toString());
+			// System.out.println("3 : "+builder.toString());
 
 
 		} else if(parent != null && child == null && grandChild == null) {
 			authenticationBuilder(builder);
-			builder.append("c.parent = :parent ");
+			builder.append("name_all LIKE concat((SELECT name from category where id = :parent),'/%') ");
 			param.addValue("parent", parent);
-			System.out.println("4 : "+builder.toString());
+			// System.out.println("4 : "+builder.toString());
 
 		}
 
@@ -132,17 +134,16 @@ public class ItemRepository {
 			authenticationBuilder(builder);
 			builder.append("i.brand LIKE :brand ");
 			param.addValue("brand", "%" + brand + "%");
-			System.out.println("5 : "+builder.toString());
+			// System.out.println("5 : "+builder.toString());
 
 		}
 
-		builder.append(ORDER_BY_QUERY);
-		builder.append("LIMIT 30;");
+		builder.append(ORDER_BY_QUERY + "OFFSET :page_limit * (:nowPage -1) LIMIT :page_limit");
+		param.addValue("nowPage", nowPage).addValue("page_limit", pageLimit);
 
 		System.out.println("6 : "+builder.toString());
 
 		List<Item> itemList = template.query(builder.toString(), param,ITEMS_ROW_MAPPER);
-		System.out.println("repositoryitemlist----"+itemList);
 		
 		return itemList;
 	}
