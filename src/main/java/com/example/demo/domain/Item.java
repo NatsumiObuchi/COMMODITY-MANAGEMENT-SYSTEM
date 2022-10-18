@@ -5,14 +5,15 @@ import lombok.Data;
 @Data
 public class Item {
 
-	 private int id;
+	 private Integer count;
+	 private Integer id;
 	 private String name;
-	 private int condition;
+	 private Integer condition;
 	 private String categoryName;
 	 private Integer categoryId;
 	 private String brand;
 	 private Integer price;
-	 private int shipping;
+	 private Integer shipping;
 	 private String description;
 	 
 	 

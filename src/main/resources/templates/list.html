@@ -11,15 +11,15 @@
 		integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
 		integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous" />
-	<link rel="stylesheet" href="./mercari.css" />
+	<link rel="stylesheet" href="/css/mercari.css" />
 	<!-- script -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
 		integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
 		crossorigin="anonymous"></script>
 
-	<script th:src="@{/js/category.js}"></script>
-
+		<script th:src="@{/js/category.js}"></script>
+		
 	<title>Rakus Items</title>
 </head>
 
@@ -28,10 +28,10 @@
 	<nav class="navbar navbar-inverse">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-				aria-expanded="false" aria-controls="navbar">
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
+			aria-expanded="false" aria-controls="navbar">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
 			</button>
 			<a class="navbar-brand" href="./list.html">Rakus Items</a>
 		</div>
@@ -46,18 +46,28 @@
 			</div>
 		</div>
 	</nav>
-
+	
 	<div id="main" class="container-fluid">
 		<!-- addItem link -->
 		<div id="addItemButton">
-			<a class="btn btn-default" th:href="@{/add}"><i class="fa fa-plus-square-o"></i> Add New Item</a>
-		</div>
-
-		<!-- 検索フォーム -->
-		<div id="forms">
-			<form th:action="@{/search}" th:object="${searchForm}" class="form-inline" role="form" method="POST">
-				<div class="form-group">
-					<input type="input" class="form-control" id="searchText" name="searchText" th:field="*{searchText}" placeholder="item name" />
+			<a class="btn btn-default" th:href="@{/add?nowPage=}+${nowPage}"><i class="fa fa-plus-square-o"></i> Add New
+				Item</a>
+			</div>
+			
+			<!-- 検索フォーム -->
+			<div id="forms">
+				
+				<form th:action="@{/search}" th:object="${searchForm}" class="form-inline" role="form" method="POST">
+					<input type="hidden" name="nowPage" th:value="${nowPage}">
+					<div class="form-group">
+						<div th:if="${session.search}==null">
+						<input type="text" class="form-control" id="searchText" name="searchText"
+						th:field="*{searchText}" placeholder="item name" />
+					</div>
+					<div th:unless="${session.search}==null">
+						<input type="text" class="form-control" id="searchText" name="searchText"
+						th:value="${session.search.searchText}" placeholder="item name" />
+					</div>
 				</div>
 				<div class="form-group"><i class="fa fa-plus"></i></div>
 				<div class="form-group">
@@ -73,25 +83,32 @@
 				</div>
 				<div class="form-group"><i class="fa fa-plus"></i></div>
 				<div class="form-group">
-					<input type="text" class="form-control" placeholder="brand" name="brand" th:field="*{brand}"/>
+					<input type="text" class="form-control" name="brand" th:field="*{brand}"
+					th:if="${session.search}==null" placeholder="brand" />
+					<input type="text" class="form-control" name="brand" th:field="*{brand}"
+					th:unless="${session.search}==null" th:value="${session.search.brand}" placeholder="brand" />
 				</div>
 				<div class="form-group"></div>
 				<button type="submit" class="btn btn-default"><i class="fa fa-angle-double-right"></i> search</button>
 			</form>
 		</div>
-
+		
 		<!-- pagination -->
 		<div class="pages">
 			<nav class="page-nav">
 				<ul class="pager">
-					<li class="previous"><a href="#">&larr; prev</a></li>
-					<li class="next"><a href="#">next &rarr;</a></li>
-				</ul>
-			</nav>
-		</div>
-
-		<div class="text-danger" th:text="${noItemMessage}" ></div>
-
+					<li class="previous"><a th:if="1!=${nowPage}"
+						th:href="@{/showlist(nowPage=${nowPage},prevPageFlg=1,nextPageFlg=,searchFlg=${searchFlg})}">&larr;
+						prev</a></li>
+						<li class="next"><a th:if="${count}!=${nowPage}"
+							th:href="@{/showlist(nowPage=${nowPage},prevPageFlg=,nextPageFlg=1,searchFlg=${searchFlg})}">next
+							&rarr;</a></li>
+						</ul>
+					</nav>
+				</div>
+				
+				<div class="text-danger" th:text="${noItemMessage}"></div>
+				
 		<!-- table -->
 		<div class="table-responsive">
 			<table id="item-table" class="table table-hover table-condensed">
@@ -107,46 +124,62 @@
 				<tbody>
 					<tr th:each="item:${itemList}">
 						<td class="item-name">
-							<a th:href="@{/detail?id=}+${item.id}">Razer BlackWidow Chroma Keyboard
+							<a th:href="@{/detail?id=}+${item.id}">
 								<span th:text="${item.name}">itemName</span>
 							</a>
 						</td>
 						<td class="item-price" th:text="${item.price}">52.0</td>
 						<td class="item-category" th:text="${item.categoryName}"><a href="">Electronics</a> / <a
-								href="">Computers &amp; Tablets</a> / <a href="">Components &amp; Parts</a></td>
-						<td class="item-brand" th:text="${item.brand}"><a href="">Razer</a></td>
-						<td class="item-condition" th:text="${item.condition}">3</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-
-		<!-- pagination -->
-		<div class="pages">
-			<nav class="page-nav">
-				<ul class="pager">
-					<li class="previous"><a href="#">&larr; prev</a></li>
-					<li class="next"><a href="#">next &rarr;</a></li>
-				</ul>
+							href="">Computers &amp; Tablets</a> / <a href="">Components &amp; Parts</a></td>
+							<td class="item-brand" th:text="${item.brand}"><a href="">Razer</a></td>
+							<td class="item-condition" th:text="${item.condition}">3</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+			<!-- pagination -->
+			<div class="pages">
+				<nav class="page-nav">
+					<ul class="pager">
+						<li class="previous"><a th:if="1!=${nowPage}"
+							th:href="@{/showlist(nowPage=${nowPage},prevPageFlg=1,nextPageFlg=,searchFlg=${searchFlg})}">&larr;
+							prev</a></li>
+							<li class="next"><a th:if="${count}!=${nowPage}"
+								th:href="@{/showlist(nowPage=${nowPage},prevPageFlg=,nextPageFlg=1,searchFlg=${searchFlg})}">next
+								&rarr;</a></li>
+							</ul>
 			</nav>
 			<!-- ページ番号を指定して表示するフォーム -->
 			<div id="select-page">
-				<form class="form-inline">
+				<form class="form-inline" th:action="@{/showlist}">
+					<input type="hidden" name="searchParent" th:if="${session.search}!=null"
+					th:value="${session.search.parent}">
+					<input type="hidden" name="searchChild" th:if="${session.search}!=null"
+					th:value="${session.search.child}">
+					<input type="hidden" name="searchGrandChild" th:if="${session.search}!=null"
+					th:value="${session.search.grandChild}">
+					<input type="hidden" name="searchFlg" th:value="${searchFlg}" />
+					
 					<div class="form-group">
+						<label></label>
 						<div class="input-group col-xs-6">
-							<label></label>
-							<input type="text" class="form-control" />
+							<input type="text" id="nowPageSearch" name="nowPage" class="form-control" th:value="${nowPage}"/>
+							
 							<!-- 総ページ数 -->
-							<div class="input-group-addon">/ 20</div>
+							<div class="input-group-addon" id="count" name="count" th:text="${count}" th:value="${count}">/ 20
+							</div>
 						</div>
 						<div class="input-group col-xs-1">
-							<button type="submit" class="btn btn-default">Go</button>
+							<button type="submit" id="pageButton" class="btn btn-default">Go</button>
 						</div>
 					</div>
 				</form>
 			</div>
 		</div>
+		
 	</div>
+	<script th:src="@{/js/pageSelect.js}"></script>
 </body>
 
 </html>
