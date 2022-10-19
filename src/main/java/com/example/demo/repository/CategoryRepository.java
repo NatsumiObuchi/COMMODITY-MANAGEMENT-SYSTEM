@@ -27,20 +27,6 @@ public class CategoryRepository {
 		return cat;
 	};
 	
-//	/**
-//	 * カテゴリーを全件検索
-//	 * @return categoryList
-//	 */
-//	public List<Category> findAll(){
-//		
-//		String sql = "SELECT id, parent, name, name_all FROM category ORDER BY id";
-//		
-//		List<Category> categoryList = template.query(sql, CATEGORY_ROW_MAPPER);
-//		return categoryList;
-//		
-//	}
-	
-	
 	/**
 	 * 親カテゴリーを検索
 	 * @return categoryList
