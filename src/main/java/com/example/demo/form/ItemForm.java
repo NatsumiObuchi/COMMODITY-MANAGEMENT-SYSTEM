@@ -18,7 +18,6 @@ public class ItemForm {
 	@Pattern(regexp = "^[0-9]*$", message = "半角英数字で入力してください")
 	private String price;
 	
-	// @NotBlank(message = "カテゴリーを選択してください")
 	private String parent;
 	private String child;
 	private String grandChild;

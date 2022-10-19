@@ -17,6 +17,10 @@ public class CategoryController {
 	@Autowired
 	private CategoryService service;
 
+	/**
+	 * 親カテゴリを全件検索
+	 * @return 親カテゴリのList
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/searchParent", method = RequestMethod.GET)
 	public List<Category> searchParent() {
@@ -27,6 +31,11 @@ public class CategoryController {
 	}
 
 	
+	/**
+	 * 子カテゴリをidから検索
+	 * @param id 親カテゴリのid
+	 * @return 子カテゴリのList
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/searchChild" , method = RequestMethod.GET)
 	public List<Category> searchChild(Integer id){
@@ -36,6 +45,11 @@ public class CategoryController {
 		return childCategoryList;
 	}
 
+	/**
+	 * 孫カテゴリをidから検索
+	 * @param id 子カテゴリのid
+	 * @return 孫カテゴリのList
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/searchGrandChild" , method = RequestMethod.GET)
 	public List<Category> searchGrandChild(Integer id){

@@ -29,7 +29,6 @@ window.onpageshow = () => {
 		let id = searchParent.value;
 		// 子カテゴリに選択肢を詰めるメソッドを呼び出す
 		selectChild(id);
-
 	}
 
 	// 孫カテゴリに値を入れて検索をかけたとき、次のページまで値を保持する処理
